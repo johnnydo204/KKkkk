@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Hồ Sơ Thẩm Định Bản Dịch</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@600;700;900&display=swap');
+
+:root{
+  --ink:#12141c;
+  --ink2:#1b1f2b;
+  --paper:#efe6cf;
+  --paper-dark:#e2d6b3;
+  --brass:#c9a24b;
+  --brass-dim:#8f7433;
+  --red:#8b2f2f;
+  --red-bright:#b0392f;
+  --green:#3a5a40;
+  --text-dark:#241f14;
+  --muted:#6b5f45;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at 20% 0%, #232a3d 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 100%, #1a1f30 0%, transparent 55%),
+    var(--ink);
+  font-family:'Courier Prime', monospace;
+  color:var(--paper);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px 16px;
+}
+.stage{
+  width:100%;
+  max-width:760px;
+}
+
+/* ---------- header ---------- */
+.masthead{
+  text-align:center;
+  margin-bottom:22px;
+}
+.masthead .kicker{
+  font-family:'Special Elite', monospace;
+  letter-spacing:5px;
+  font-size:11px;
+  color:var(--brass);
+  text-transform:uppercase;
+}
+.masthead h1{
+  font-family:'Playfair Display', serif;
+  font-weight:900;
+  font-size:clamp(26px,4.5vw,38px);
+  margin:6px 0 4px;
+  color:var(--paper);
+}
+.masthead .sub{
+  font-size:13px;
+  color:#a6adc4;
+  font-style:italic;
+}
+
+/* ---------- progress ---------- */
+.progress-row{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin:18px 0 6px;
+}
+.dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#3a4056;
+  border:1px solid #4c5470;
+  transition:background .25s;
+}
+.dot.done{background:var(--brass);border-color:var(--brass);}
+.dot.current{background:var(--paper);border-color:var(--paper);box-shadow:0 0 0 3px rgba(201,162,75,.3);}
+
+.score-line{
+  text-align:center;
+  font-size:12px;
+  color:#8f97b3;
+  margin-bottom:18px;
+  letter-spacing:1px;
+}
+.score-line b{color:var(--brass);}
+
+/* ---------- case file card ---------- */
+.case-card{
+  position:relative;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.02) 0 2px, transparent 2px 4px),
+    var(--paper);
+  color:var(--text-dark);
+  border-radius:3px;
+  padding:30px 30px 26px;
+  box-shadow:0 22px 45px rgba(0,0,0,.45), 0 2px 0 rgba(0,0,0,.15) inset;
+  transform:rotate(-0.4deg);
+}
+.case-card:before{
+  content:"";
+  position:absolute;
+  top:-14px; left:26px;
+  width:70px; height:26px;
+  background:rgba(201,162,75,.55);
+  border:1px solid rgba(201,162,75,.75);
+  transform:rotate(-3deg);
+}
+.case-no{
+  font-family:'Special Elite', monospace;
+  font-size:12px;
+  letter-spacing:3px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.pair{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-bottom:18px;
+}
+.line{
+  border-left:3px solid var(--brass-dim);
+  padding:10px 14px;
+  background:rgba(0,0,0,.035);
+}
+.line .lbl{
+  font-family:'Special Elite', monospace;
+  font-size:10.5px;
+  letter-spacing:2px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+.line .txt{
+  font-size:16px;
+  line-height:1.5;
+}
+.line.translated{border-left-color:var(--red);}
+
+.question{
+  font-family:'Special Elite', monospace;
+  font-size:13px;
+  color:var(--text-dark);
+  margin:6px 0 14px;
+  text-align:center;
+  letter-spacing:.5px;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+@media(max-width:560px){ .options{grid-template-columns:1fr;} }
+
+.opt{
+  font-family:'Courier Prime', monospace;
+  font-size:13px;
+  text-align:left;
+  padding:12px 14px;
+  background:#fbf7ea;
+  border:1.5px solid #cbb98a;
+  border-radius:2px;
+  cursor:pointer;
+  color:var(--text-dark);
+  transition:transform .12s, box-shadow .12s, background .12s;
+  line-height:1.35;
+}
+.opt b{display:block;font-size:12.5px;letter-spacing:.5px;margin-bottom:2px;}
+.opt:hover:not(:disabled){
+  transform:translateY(-2px);
+  box-shadow:0 6px 14px rgba(0,0,0,.18);
+  background:#fff;
+}
+.opt:disabled{cursor:default;}
+.opt.correct-pick{background:#dfeadb;border-color:var(--green);}
+.opt.wrong-pick{background:#f1d9d6;border-color:var(--red);}
+.opt.reveal-correct{background:#dfeadb;border-color:var(--green);box-shadow:0 0 0 2px var(--green) inset;}
+
+/* stamp */
+.stamp{
+  position:absolute;
+  top:38%;
+  left:50%;
+  transform:translate(-50%,-50%) rotate(-14deg) scale(0.4);
+  font-family:'Special Elite', monospace;
+  font-size:clamp(26px,5vw,40px);
+  font-weight:700;
+  letter-spacing:4px;
+  padding:10px 22px;
+  border:5px solid;
+  border-radius:8px;
+  opacity:0;
+  pointer-events:none;
+  z-index:5;
+  text-transform:uppercase;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s;
+}
+.stamp.show{opacity:.9; transform:translate(-50%,-50%) rotate(-14deg) scale(1);}
+.stamp.ok{color:var(--green); border-color:var(--green);}
+.stamp.no{color:var(--red-bright); border-color:var(--red-bright);}
+
+.explain{
+  margin-top:16px;
+  padding:14px 16px;
+  background:rgba(0,0,0,.05);
+  border-radius:2px;
+  font-size:13px;
+  line-height:1.55;
+  display:none;
+}
+.explain.show{display:block;}
+.explain .tag{
+  display:inline-block;
+  font-family:'Special Elite', monospace;
+  font-size:10.5px;
+  letter-spacing:1.5px;
+  color:var(--paper);
+  background:var(--ink2);
+  padding:3px 8px;
+  border-radius:2px;
+  margin-bottom:8px;
+}
+
+.next-row{
+  margin-top:18px;
+  text-align:right;
+}
+.next-btn{
+  font-family:'Special Elite', monospace;
+  letter-spacing:1.5px;
+  font-size:13px;
+  background:var(--ink2);
+  color:var(--brass);
+  border:1px solid var(--brass-dim);
+  padding:10px 20px;
+  border-radius:2px;
+  cursor:pointer;
+  display:none;
+}
+.next-row.show .next-btn{display:inline-block;}
+.next-btn:hover{background:#252b3d;}
+
+/* ---------- intro / end screens ---------- */
+.panel{
+  background:var(--paper);
+  color:var(--text-dark);
+  border-radius:3px;
+  padding:34px 30px;
+  box-shadow:0 22px 45px rgba(0,0,0,.45);
+  text-align:center;
+}
+.panel h2{
+  font-family:'Playfair Display', serif;
+  font-size:24px;
+  margin:0 0 10px;
+}
+.panel p{
+  font-size:14px;
+  line-height:1.6;
+  color:var(--muted);
+  margin:0 auto 18px;
+  max-width:520px;
+}
+.framework{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:20px 0 24px;
+}
+@media(max-width:560px){.framework{grid-template-columns:1fr 1fr;}}
+.framework div{
+  background:#fbf7ea;
+  border:1px solid #cbb98a;
+  border-radius:2px;
+  padding:10px 6px;
+  font-size:11px;
+  line-height:1.4;
+}
+.framework div b{display:block;font-size:12.5px;margin-bottom:2px;}
+.start-btn{
+  font-family:'Special Elite', monospace;
+  letter-spacing:2px;
+  font-size:14px;
+  background:var(--ink2);
+  color:var(--brass);
+  border:1px solid var(--brass-dim);
+  padding:13px 30px;
+  border-radius:2px;
+  cursor:pointer;
+}
+.start-btn:hover{background:#252b3d;}
+
+.rank-badge{
+  font-family:'Special Elite', monospace;
+  font-size:11px;
+  letter-spacing:3px;
+  color:var(--brass);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.big-score{
+  font-family:'Playfair Display', serif;
+  font-weight:900;
+  font-size:52px;
+  color:var(--text-dark);
+  margin:2px 0 4px;
+}
+.recap{
+  text-align:left;
+  margin:22px auto 0;
+  max-width:520px;
+  font-size:12.5px;
+}
+.recap-row{
+  display:flex;
+  justify-content:space-between;
+  padding:7px 0;
+  border-bottom:1px dashed #cbb98a;
+}
+.recap-row span:last-child{font-weight:700;}
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="masthead">
+    <div class="kicker">Lesson 6 · Bài tập thực hành</div>
+    <h1>Hồ Sơ Thẩm Định Bản Dịch</h1>
+    <div class="sub">Bạn là nhà phê bình dịch thuật. Hãy xếp mỗi bản dịch vào đúng hồ sơ.</div>
+  </div>
+
+  <div id="progressArea" style="display:none">
+    <div class="progress-row" id="dots"></div>
+    <div class="score-line">Điểm: <b id="scoreNow">0</b> / <span id="scoreMax">0</span></div>
+  </div>
+
+  <div id="root"></div>
+
+</div>
+
+<script>
+const CASES = [
+  {
+    label: "Hồ sơ #01",
+    source: "The town hall was built in 1890.",
+    translated: "Tòa thị chính được xây dựng vào năm 1980.",
+    correct: "reference",
+    explain: "Con số bị đổi từ 1890 thành 1980 — một sự kiện, dữ kiện có thật bị dịch sai. Đây là <b>lỗi quy chiếu (referential error)</b>: sai lệch với thực tế, không liên quan đến ngữ pháp hay từ vựng."
+  },
+  {
+    label: "Hồ sơ #02",
+    source: "The patient's temperature was 39°C.",
+    translated: "Nhiệt độ của bệnh nhân là 39°F.",
+    correct: "reference",
+    explain: "39°C và 39°F là hai giá trị hoàn toàn khác nhau về mặt y học. Đổi đơn vị mà không quy đổi số liệu là <b>lỗi quy chiếu</b> — sai sự thật, có thể gây hậu quả nghiêm trọng trong văn bản y tế."
+  },
+  {
+    label: "Hồ sơ #03",
+    source: "I bought three books yesterday.",
+    translated: "Tôi đã mua ba con sách hôm qua.",
+    correct: "linguistic",
+    explain: "\"Con\" là loại từ dùng cho động vật, không dùng cho \"sách\" (phải là \"cuốn/quyển\"). Đây là <b>lỗi ngôn ngữ (linguistic error)</b> — sai về mặt cấu trúc/từ loại của ngôn ngữ đích, không liên quan đến sự kiện thực tế."
+  },
+  {
+    label: "Hồ sơ #04",
+    source: "He gave her a book.",
+    translated: "Anh ấy đưa cho cô ấy những một cuốn sách.",
+    correct: "linguistic",
+    explain: "\"Những một\" là cấu trúc ngữ pháp không tồn tại trong tiếng Việt (\"những\" chỉ số nhiều, \"một\" chỉ số ít — mâu thuẫn nhau). Đây là <b>lỗi ngôn ngữ</b>, do người dịch chưa nắm vững ngữ pháp đích."
+  },
+  {
+    label: "Hồ sơ #05",
+    source: "Please find attached the invoice.",
+    translated: "Vui lòng tìm đính kèm hóa đơn.",
+    correct: "craft",
+    explain: "Câu dịch bám sát từng từ tiếng Anh (\"find attached\" → \"tìm đính kèm\") nhưng tạo ra một câu văn cứng, không tự nhiên trong tiếng Việt. Đây là <b>translationese</b> — lỗi thuộc phạm trù \"kỹ năng\" (craft), không sai ngữ pháp rõ ràng nhưng đọc lên rất gượng."
+  },
+  {
+    label: "Hồ sơ #06",
+    source: "It's raining cats and dogs.",
+    translated: "Trời đang mưa mèo và chó.",
+    correct: "craft",
+    explain: "Dịch nguyên văn từng chữ khiến câu trở nên vô nghĩa trong tiếng Việt. Đây là ví dụ điển hình của <b>translationese</b> — sản phẩm của việc dịch máy móc, thiếu \"tái tạo theo ngữ cảnh\"."
+  },
+  {
+    label: "Hồ sơ #07",
+    source: "He was as busy as a bee.",
+    translated: "Anh ấy bận rộn như con thoi đưa.",
+    correct: "art",
+    explain: "Thay vì dịch cứng \"bận như con ong\", người dịch chọn một hình ảnh quen thuộc, tự nhiên trong tiếng Việt để truyền tải đúng ý. Đây là <b>nghệ thuật (art)</b> — sự tái tạo sáng tạo theo ngữ cảnh, một yếu tố tích cực đáng được ghi nhận."
+  },
+  {
+    label: "Hồ sơ #08",
+    source: "The committee reached a unanimous decision.",
+    translated: "Ủy ban đã đạt được một quyết định nhất trí.",
+    correct: "accurate",
+    explain: "Câu dịch chính xác về nội dung, đúng ngữ pháp, tự nhiên và rõ ràng. Không có lỗi quy chiếu, không có lỗi ngôn ngữ, không gượng ép — đây là một bản dịch <b>đạt chuẩn</b>."
+  },
+];
+
+const OPTIONS = [
+  {key:"reference", title:"Lỗi quy chiếu", sub:"Sai sự thật / dữ kiện"},
+  {key:"linguistic", title:"Lỗi ngôn ngữ", sub:"Sai ngữ pháp / từ vựng"},
+  {key:"craft", title:"Translationese", sub:"Cứng, gượng, thiếu tự nhiên"},
+  {key:"art", title:"Sáng tạo hay", sub:"Tái tạo tốt theo ngữ cảnh"},
+  {key:"accurate", title:"Chính xác", sub:"Không có vấn đề gì"},
+];
+
+let idx = 0;
+let score = 0;
+let answered = false;
+
+const root = document.getElementById("root");
+const dotsEl = document.getElementById("dots");
+const progressArea = document.getElementById("progressArea");
+const scoreNowEl = document.getElementById("scoreNow");
+const scoreMaxEl = document.getElementById("scoreMax");
+scoreMaxEl.textContent = CASES.length;
+
+function renderIntro(){
+  root.innerHTML = `
+    <div class="panel">
+      <h2>Hướng dẫn điều tra</h2>
+      <p>Peter Newmark chia việc đánh giá bản dịch thành 4 mảng: <b>khoa học</b> (đúng/sai rõ ràng), <b>kỹ năng</b> (tự nhiên hay gượng ép), <b>nghệ thuật</b> (sáng tạo, tái tạo hay) và <b>gu thẩm mỹ</b>. Bạn sẽ xem ${CASES.length} "hồ sơ" — mỗi hồ sơ gồm câu gốc và bản dịch. Nhiệm vụ: đóng dấu đúng loại vấn đề cho từng hồ sơ.</p>
+      <div class="framework">
+        <div><b>Khoa học</b>Lỗi quy chiếu &amp; lỗi ngôn ngữ — đúng/sai rõ ràng</div>
+        <div><b>Kỹ năng</b>Translationese — dịch cứng, thiếu tự nhiên</div>
+        <div><b>Nghệ thuật</b>Tái tạo sáng tạo theo ngữ cảnh</div>
+        <div><b>Chính xác</b>Không có lỗi, đạt chuẩn</div>
+      </div>
+      <button class="start-btn" onclick="startGame()">▶ Mở hồ sơ đầu tiên</button>
+    </div>
+  `;
+}
+
+function startGame(){
+  idx = 0; score = 0; answered = false;
+  progressArea.style.display = "block";
+  renderDots();
+  renderCase();
+}
+
+function renderDots(){
+  dotsEl.innerHTML = CASES.map((_,i)=>{
+    let cls = "dot";
+    if(i < idx) cls += " done";
+    else if(i === idx) cls += " current";
+    return `<div class="${cls}"></div>`;
+  }).join("");
+  scoreNowEl.textContent = score;
+}
+
+function renderCase(){
+  answered = false;
+  const c = CASES[idx];
+  root.innerHTML = `
+    <div class="case-card">
+      <div class="stamp" id="stampEl"></div>
+      <div class="case-no">${c.label} — Nguồn Anh ngữ / Bản dịch tiếng Việt</div>
+      <div class="pair">
+        <div class="line">
+          <div class="lbl">Văn bản gốc (EN)</div>
+          <div class="txt">${c.source}</div>
+        </div>
+        <div class="line translated">
+          <div class="lbl">Bản dịch (VI)</div>
+          <div class="txt">${c.translated}</div>
+        </div>
+      </div>
+      <div class="question">Bạn xếp bản dịch này vào hồ sơ nào?</div>
+      <div class="options" id="optsEl">
+        ${OPTIONS.map(o=>`
+          <button class="opt" data-key="${o.key}" onclick="pick('${o.key}')">
+            <b>${o.title}</b>${o.sub}
+          </button>
+        `).join("")}
+      </div>
+      <div class="explain" id="explainEl"></div>
+      <div class="next-row" id="nextRow">
+        <button class="next-btn" onclick="nextCase()">Hồ sơ tiếp theo →</button>
+      </div>
+    </div>
+  `;
+  renderDots();
+}
+
+function pick(key){
+  if(answered) return;
+  answered = true;
+  const c = CASES[idx];
+  const isCorrect = key === c.correct;
+  if(isCorrect) score++;
+
+  document.querySelectorAll(".opt").forEach(btn=>{
+    btn.disabled = true;
+    const k = btn.getAttribute("data-key");
+    if(k === c.correct) btn.classList.add("reveal-correct");
+    if(k === key && !isCorrect) btn.classList.add("wrong-pick");
+    if(k === key && isCorrect) btn.classList.add("correct-pick");
+  });
+
+  const stamp = document.getElementById("stampEl");
+  stamp.textContent = isCorrect ? "Chính xác" : "Sai hồ sơ";
+  stamp.classList.add(isCorrect ? "ok" : "no");
+  requestAnimationFrame(()=> stamp.classList.add("show"));
+
+  const explainEl = document.getElementById("explainEl");
+  const tagOpt = OPTIONS.find(o=>o.key === c.correct);
+  explainEl.innerHTML = `<span class="tag">${tagOpt.title}</span><br>${c.explain}`;
+  explainEl.classList.add("show");
+
+  document.getElementById("nextRow").classList.add("show");
+  scoreNowEl.textContent = score;
+}
+
+function nextCase(){
+  idx++;
+  if(idx >= CASES.length){
+    renderEnd();
+  } else {
+    renderCase();
+  }
+}
+
+function renderEnd(){
+  progressArea.style.display = "none";
+  const pct = score / CASES.length;
+  let rank, note;
+  if(pct === 1){
+    rank = "Chuyên Gia Newmark";
+    note = "Bạn phân biệt thành thạo cả 4 mảng: khoa học, kỹ năng, nghệ thuật và gu thẩm mỹ trong đánh giá bản dịch.";
+  } else if(pct >= 0.75){
+    rank = "Nhà Phê Bình Tận Tâm";
+    note = "Rất tốt! Bạn nắm khá chắc khung phân tích của Newmark, chỉ còn vài điểm cần tinh chỉnh.";
+  } else if(pct >= 0.5){
+    rank = "Điều Tra Viên Triển Vọng";
+    note = "Bạn đã hiểu ý tưởng chính, nhưng nên xem lại ranh giới giữa lỗi quy chiếu, lỗi ngôn ngữ và translationese.";
+  } else {
+    rank = "Điều Tra Viên Tập Sự";
+    note = "Hãy xem lại khung 4 mảng (khoa học – kỹ năng – nghệ thuật – gu thẩm mỹ) trong Chương 17 rồi thử lại nhé.";
+  }
+
+  root.innerHTML = `
+    <div class="panel">
+      <div class="rank-badge">Kết quả điều tra</div>
+      <div class="big-score">${score} / ${CASES.length}</div>
+      <h2>${rank}</h2>
+      <p>${note}</p>
+      <div class="recap">
+        ${CASES.map(c=>{
+          const label = OPTIONS.find(o=>o.key===c.correct).title;
+          return `<div class="recap-row"><span>${c.label}</span><span>${label}</span></div>`;
+        }).join("")}
+      </div>
+      <div style="margin-top:24px;">
+        <button class="start-btn" onclick="startGame()">↺ Điều tra lại từ đầu</button>
+      </div>
+    </div>
+  `;
+}
+
+renderIntro();
+</script>
+</body>
+</html>
