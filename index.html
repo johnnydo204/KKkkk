@@ -306,6 +306,73 @@ body{
   text-transform:uppercase;
   margin-bottom:6px;
 }
+.name-form{
+  max-width:340px;
+  margin:0 auto 20px;
+  text-align:left;
+}
+.name-form label{
+  display:block;
+  font-family:'Special Elite', monospace;
+  font-size:11px;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.name-form input{
+  width:100%;
+  font-family:'Courier Prime', monospace;
+  font-size:15px;
+  padding:11px 12px;
+  border:1.5px solid #cbb98a;
+  border-radius:2px;
+  background:#fbf7ea;
+  color:var(--text-dark);
+  margin-bottom:6px;
+}
+.name-form input:focus{outline:2px solid var(--brass);}
+.name-err{
+  font-size:11.5px;
+  color:var(--red-bright);
+  min-height:16px;
+  margin-bottom:4px;
+}
+.player-tag{
+  display:inline-block;
+  font-family:'Special Elite', monospace;
+  font-size:11px;
+  letter-spacing:1.5px;
+  color:var(--ink);
+  background:var(--brass);
+  padding:4px 10px;
+  border-radius:2px;
+  margin-bottom:14px;
+}
+.submit-row{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px dashed #cbb98a;
+}
+.submit-row p{font-size:12px;color:var(--muted);margin:0 0 12px;}
+.submit-btn{
+  font-family:'Special Elite', monospace;
+  letter-spacing:1.5px;
+  font-size:13px;
+  background:var(--green);
+  color:#fdf9ec;
+  border:1px solid #2d4633;
+  padding:12px 24px;
+  border-radius:2px;
+  cursor:pointer;
+}
+.submit-btn:hover{background:#325038;}
+.submit-btn:disabled{background:#8fa590;cursor:default;}
+.submit-note{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:10px;
+}
 .big-score{
   font-family:'Playfair Display', serif;
   font-weight:900;
@@ -414,9 +481,16 @@ const OPTIONS = [
   {key:"accurate", title:"Chính xác", sub:"Không có vấn đề gì"},
 ];
 
+// ==== CẤU HÌNH FIREBASE (điền Database URL sau khi tạo xong) ====
+// Dán địa chỉ Realtime Database vào đây, ví dụ:
+// "https://ho-so-tham-dinh-default-rtdb.asia-southeast1.firebasedatabase.app"
+// Để trống "" nếu chưa có — nút nộp điểm & bảng xếp hạng sẽ tự ẩn.
+const FIREBASE_DB_URL = "https://translation-game-4507c-default-rtdb.asia-southeast1.firebasedatabase.app";
+
 let idx = 0;
 let score = 0;
 let answered = false;
+let playerName = "";
 
 const root = document.getElementById("root");
 const dotsEl = document.getElementById("dots");
@@ -428,6 +502,35 @@ scoreMaxEl.textContent = CASES.length;
 function renderIntro(){
   root.innerHTML = `
     <div class="panel">
+      <h2>Trước khi vào ca trực...</h2>
+      <p>Vui lòng đăng ký danh tính để hồ sơ điều tra được ghi nhận đúng người.</p>
+      <div class="name-form">
+        <label>Họ và tên</label>
+        <input id="nameInput" type="text" placeholder="Nguyễn Văn A" maxlength="40" autocomplete="off">
+        <div class="name-err" id="nameErr"></div>
+      </div>
+      <button class="start-btn" onclick="confirmName()">Xác nhận danh tính →</button>
+    </div>
+  `;
+  const inp = document.getElementById("nameInput");
+  inp.focus();
+  inp.addEventListener("keydown", (e)=>{ if(e.key === "Enter") confirmName(); });
+}
+
+function confirmName(){
+  const val = document.getElementById("nameInput").value.trim();
+  if(!val){
+    document.getElementById("nameErr").textContent = "Vui lòng nhập tên trước khi bắt đầu.";
+    return;
+  }
+  playerName = val;
+  renderFramework();
+}
+
+function renderFramework(){
+  root.innerHTML = `
+    <div class="panel">
+      <span class="player-tag">Điều tra viên: ${escapeHtml(playerName)}</span>
       <h2>Hướng dẫn điều tra</h2>
       <p>Peter Newmark chia việc đánh giá bản dịch thành 4 mảng: <b>khoa học</b> (đúng/sai rõ ràng), <b>kỹ năng</b> (tự nhiên hay gượng ép), <b>nghệ thuật</b> (sáng tạo, tái tạo hay) và <b>gu thẩm mỹ</b>. Bạn sẽ xem ${CASES.length} "hồ sơ" — mỗi hồ sơ gồm câu gốc và bản dịch. Nhiệm vụ: đóng dấu đúng loại vấn đề cho từng hồ sơ.</p>
       <div class="framework">
@@ -437,8 +540,15 @@ function renderIntro(){
         <div><b>Chính xác</b>Không có lỗi, đạt chuẩn</div>
       </div>
       <button class="start-btn" onclick="startGame()">▶ Mở hồ sơ đầu tiên</button>
+      ${FIREBASE_DB_URL ? `<button class="start-btn" style="margin-left:10px;" onclick="renderLeaderboard()">📋 Xem bảng xếp hạng</button>` : ``}
     </div>
   `;
+}
+
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
 }
 
 function startGame(){
@@ -548,8 +658,11 @@ function renderEnd(){
     note = "Hãy xem lại khung 4 mảng (khoa học – kỹ năng – nghệ thuật – gu thẩm mỹ) trong Chương 17 rồi thử lại nhé.";
   }
 
+  const hasBoard = !!FIREBASE_DB_URL;
+
   root.innerHTML = `
     <div class="panel">
+      <span class="player-tag">${escapeHtml(playerName)}</span>
       <div class="rank-badge">Kết quả điều tra</div>
       <div class="big-score">${score} / ${CASES.length}</div>
       <h2>${rank}</h2>
@@ -560,11 +673,70 @@ function renderEnd(){
           return `<div class="recap-row"><span>${c.label}</span><span>${label}</span></div>`;
         }).join("")}
       </div>
-      <div style="margin-top:24px;">
+      ${hasBoard ? `
+      <div class="submit-row">
+        <p>Nộp điểm vào bảng xếp hạng chung của lớp để tranh top.</p>
+        <button class="submit-btn" id="submitBtn" onclick="submitScore()">🏆 Nộp kết quả vào bảng xếp hạng</button>
+        <div class="submit-note" id="submitNote"></div>
+      </div>` : ``}
+      <div style="margin-top:24px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
         <button class="start-btn" onclick="startGame()">↺ Điều tra lại từ đầu</button>
+        ${hasBoard ? `<button class="start-btn" onclick="renderLeaderboard()">📋 Xem bảng xếp hạng</button>` : ``}
       </div>
     </div>
   `;
+}
+
+async function submitScore(){
+  const btn = document.getElementById("submitBtn");
+  const note = document.getElementById("submitNote");
+  btn.disabled = true;
+  btn.textContent = "Đang nộp...";
+  try{
+    const res = await fetch(`${FIREBASE_DB_URL}/scores.json`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ name: playerName, score: score, total: CASES.length, time: Date.now() })
+    });
+    if(!res.ok) throw new Error("network");
+    btn.textContent = "✓ Đã nộp kết quả";
+    note.textContent = "Bấm \"Xem bảng xếp hạng\" để theo dõi vị trí của bạn.";
+  } catch(err){
+    btn.disabled = false;
+    btn.textContent = "🏆 Nộp kết quả vào bảng xếp hạng";
+    note.textContent = "Nộp thất bại, kiểm tra kết nối mạng và thử lại.";
+  }
+}
+
+async function renderLeaderboard(){
+  root.innerHTML = `
+    <div class="panel">
+      <div class="rank-badge">Bảng xếp hạng</div>
+      <h2>Top điều tra viên xuất sắc</h2>
+      <div id="boardArea" style="text-align:left; max-width:480px; margin:18px auto;">
+        <p style="text-align:center;">Đang tải...</p>
+      </div>
+      <button class="start-btn" onclick="renderLeaderboard()">↻ Làm mới</button>
+      <button class="start-btn" onclick="startGame()">↺ Chơi lại</button>
+    </div>
+  `;
+  try{
+    const res = await fetch(`${FIREBASE_DB_URL}/scores.json`);
+    const data = await res.json();
+    const entries = data ? Object.values(data) : [];
+    entries.sort((a,b)=> b.score - a.score || a.time - b.time);
+    const boardArea = document.getElementById("boardArea");
+    if(entries.length === 0){
+      boardArea.innerHTML = `<p style="text-align:center;">Chưa có ai nộp kết quả.</p>`;
+      return;
+    }
+    boardArea.innerHTML = entries.slice(0,15).map((e,i)=>{
+      const medal = i===0 ? "🥇" : i===1 ? "🥈" : i===2 ? "🥉" : `${i+1}.`;
+      return `<div class="recap-row"><span>${medal} ${escapeHtml(e.name)}</span><span>${e.score}/${e.total}</span></div>`;
+    }).join("");
+  } catch(err){
+    document.getElementById("boardArea").innerHTML = `<p style="text-align:center;">Không tải được bảng xếp hạng, kiểm tra kết nối mạng.</p>`;
+  }
 }
 
 renderIntro();
