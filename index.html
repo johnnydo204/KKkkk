@@ -902,6 +902,7 @@ async function renderAdminBoard(){
       <div class="admin-toolbar">
         <button class="start-btn" onclick="renderAdminBoard()">↻ Refresh</button>
         <button class="start-btn" id="exportBtn" onclick="exportCsv()" style="display:none;">⬇ Export CSV</button>
+        <button class="start-btn" style="background:#5a2626; border-color:#7a3232;" onclick="clearLeaderboard()">🗑 Clear leaderboard</button>
       </div>
     </div>
   `;
@@ -931,6 +932,18 @@ async function renderAdminBoard(){
     `;
   } catch(err){
     document.getElementById("adminArea").innerHTML = `<div class="admin-empty">Couldn't load data — check your connection.</div>`;
+  }
+}
+
+async function clearLeaderboard(){
+  const ok = window.confirm("This will permanently delete ALL leaderboard entries for everyone. This cannot be undone. Continue?");
+  if(!ok) return;
+  try{
+    const res = await fetch(`${FIREBASE_DB_URL}/scores.json`, { method: "DELETE" });
+    if(!res.ok) throw new Error("network");
+    renderAdminBoard();
+  } catch(err){
+    alert("Failed to clear the leaderboard — check your connection and try again.");
   }
 }
 
