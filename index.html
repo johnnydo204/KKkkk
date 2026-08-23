@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Hồ Sơ Thẩm Định Bản Dịch</title>
+<title>The Translation Critic's Case File</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@600;700;900&display=swap');
@@ -37,7 +37,7 @@ body{
 }
 .stage{
   width:100%;
-  max-width:760px;
+  max-width:780px;
 }
 
 /* ---------- header ---------- */
@@ -55,7 +55,7 @@ body{
 .masthead h1{
   font-family:'Playfair Display', serif;
   font-weight:900;
-  font-size:clamp(26px,4.5vw,38px);
+  font-size:clamp(24px,4.5vw,36px);
   margin:6px 0 4px;
   color:var(--paper);
 }
@@ -69,11 +69,12 @@ body{
 .progress-row{
   display:flex;
   justify-content:center;
-  gap:8px;
+  gap:6px;
   margin:18px 0 6px;
+  flex-wrap:wrap;
 }
 .dot{
-  width:10px;height:10px;border-radius:50%;
+  width:9px;height:9px;border-radius:50%;
   background:#3a4056;
   border:1px solid #4c5470;
   transition:background .25s;
@@ -89,6 +90,7 @@ body{
   letter-spacing:1px;
 }
 .score-line b{color:var(--brass);}
+.score-line b.timer-warn{color:#e08585;}
 
 /* ---------- case file card ---------- */
 .case-card{
@@ -114,11 +116,25 @@ body{
 .case-no{
   font-family:'Special Elite', monospace;
   font-size:12px;
-  letter-spacing:3px;
+  letter-spacing:2px;
   color:var(--muted);
   text-transform:uppercase;
   margin-bottom:14px;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:6px;
 }
+.difficulty{
+  padding:2px 8px;
+  border-radius:2px;
+  font-size:10px;
+  letter-spacing:1.5px;
+}
+.difficulty.easy{background:#dfeadb;color:#2c5230;}
+.difficulty.medium{background:#f3e6c4;color:#7a5a12;}
+.difficulty.hard{background:#f1d9d6;color:#8b2f2f;}
+
 .pair{
   display:flex;
   flex-direction:column;
@@ -191,7 +207,7 @@ body{
   left:50%;
   transform:translate(-50%,-50%) rotate(-14deg) scale(0.4);
   font-family:'Special Elite', monospace;
-  font-size:clamp(26px,5vw,40px);
+  font-size:clamp(24px,5vw,38px);
   font-weight:700;
   letter-spacing:4px;
   padding:10px 22px;
@@ -267,7 +283,7 @@ body{
   line-height:1.6;
   color:var(--muted);
   margin:0 auto 18px;
-  max-width:520px;
+  max-width:540px;
 }
 .framework{
   display:grid;
@@ -376,37 +392,77 @@ body{
 .big-score{
   font-family:'Playfair Display', serif;
   font-weight:900;
-  font-size:52px;
+  font-size:50px;
   color:var(--text-dark);
   margin:2px 0 4px;
 }
 .recap{
   text-align:left;
   margin:22px auto 0;
-  max-width:520px;
-  font-size:12.5px;
+  max-width:540px;
+  font-size:12px;
+  max-height:280px;
+  overflow-y:auto;
 }
 .recap-row{
   display:flex;
   justify-content:space-between;
-  padding:7px 0;
+  gap:10px;
+  padding:6px 0;
   border-bottom:1px dashed #cbb98a;
 }
-.recap-row span:last-child{font-weight:700;}
+.recap-row span:last-child{font-weight:700; white-space:nowrap;}
+
+.admin-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12.5px;
+  text-align:left;
+  margin-top:12px;
+}
+.admin-table th{
+  font-family:'Special Elite', monospace;
+  font-size:10.5px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+  border-bottom:2px solid #cbb98a;
+  padding:8px 10px;
+}
+.admin-table td{
+  padding:8px 10px;
+  border-bottom:1px dashed #d8cba0;
+}
+.admin-table tr:nth-child(even){background:rgba(0,0,0,.03);}
+.admin-toolbar{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.admin-empty{
+  text-align:center;
+  color:var(--muted);
+  padding:24px;
+}
 </style>
 </head>
 <body>
 <div class="stage">
 
   <div class="masthead">
-    <div class="kicker">Lesson 6 · Bài tập thực hành</div>
-    <h1>Hồ Sơ Thẩm Định Bản Dịch</h1>
-    <div class="sub">Bạn là nhà phê bình dịch thuật. Hãy xếp mỗi bản dịch vào đúng hồ sơ.</div>
+    <div class="kicker">Lesson 6 · Practice Activity</div>
+    <h1>The Translation Critic's Case File</h1>
+    <div class="sub">You are the translation critic. File each translation under the right category.</div>
   </div>
 
   <div id="progressArea" style="display:none">
     <div class="progress-row" id="dots"></div>
-    <div class="score-line">Điểm: <b id="scoreNow">0</b> / <span id="scoreMax">0</span></div>
+    <div class="score-line">
+      Score: <b id="scoreNow">0</b> / <span id="scoreMax">0</span>
+      &nbsp;·&nbsp; ⏱ Time left: <b id="timerEl">05:00</b>
+    </div>
   </div>
 
   <div id="root"></div>
@@ -414,83 +470,141 @@ body{
 </div>
 
 <script>
-const CASES = [
-  {
-    label: "Hồ sơ #01",
-    source: "The town hall was built in 1890.",
-    translated: "Tòa thị chính được xây dựng vào năm 1980.",
-    correct: "reference",
-    explain: "Con số bị đổi từ 1890 thành 1980 — một sự kiện, dữ kiện có thật bị dịch sai. Đây là <b>lỗi quy chiếu (referential error)</b>: sai lệch với thực tế, không liên quan đến ngữ pháp hay từ vựng."
-  },
-  {
-    label: "Hồ sơ #02",
-    source: "The patient's temperature was 39°C.",
-    translated: "Nhiệt độ của bệnh nhân là 39°F.",
-    correct: "reference",
-    explain: "39°C và 39°F là hai giá trị hoàn toàn khác nhau về mặt y học. Đổi đơn vị mà không quy đổi số liệu là <b>lỗi quy chiếu</b> — sai sự thật, có thể gây hậu quả nghiêm trọng trong văn bản y tế."
-  },
-  {
-    label: "Hồ sơ #03",
-    source: "I bought three books yesterday.",
-    translated: "Tôi đã mua ba con sách hôm qua.",
-    correct: "linguistic",
-    explain: "\"Con\" là loại từ dùng cho động vật, không dùng cho \"sách\" (phải là \"cuốn/quyển\"). Đây là <b>lỗi ngôn ngữ (linguistic error)</b> — sai về mặt cấu trúc/từ loại của ngôn ngữ đích, không liên quan đến sự kiện thực tế."
-  },
-  {
-    label: "Hồ sơ #04",
-    source: "He gave her a book.",
-    translated: "Anh ấy đưa cho cô ấy những một cuốn sách.",
-    correct: "linguistic",
-    explain: "\"Những một\" là cấu trúc ngữ pháp không tồn tại trong tiếng Việt (\"những\" chỉ số nhiều, \"một\" chỉ số ít — mâu thuẫn nhau). Đây là <b>lỗi ngôn ngữ</b>, do người dịch chưa nắm vững ngữ pháp đích."
-  },
-  {
-    label: "Hồ sơ #05",
-    source: "Please find attached the invoice.",
-    translated: "Vui lòng tìm đính kèm hóa đơn.",
-    correct: "craft",
-    explain: "Câu dịch bám sát từng từ tiếng Anh (\"find attached\" → \"tìm đính kèm\") nhưng tạo ra một câu văn cứng, không tự nhiên trong tiếng Việt. Đây là <b>translationese</b> — lỗi thuộc phạm trù \"kỹ năng\" (craft), không sai ngữ pháp rõ ràng nhưng đọc lên rất gượng."
-  },
-  {
-    label: "Hồ sơ #06",
-    source: "It's raining cats and dogs.",
-    translated: "Trời đang mưa mèo và chó.",
-    correct: "craft",
-    explain: "Dịch nguyên văn từng chữ khiến câu trở nên vô nghĩa trong tiếng Việt. Đây là ví dụ điển hình của <b>translationese</b> — sản phẩm của việc dịch máy móc, thiếu \"tái tạo theo ngữ cảnh\"."
-  },
-  {
-    label: "Hồ sơ #07",
-    source: "He was as busy as a bee.",
-    translated: "Anh ấy bận rộn như con thoi đưa.",
-    correct: "art",
-    explain: "Thay vì dịch cứng \"bận như con ong\", người dịch chọn một hình ảnh quen thuộc, tự nhiên trong tiếng Việt để truyền tải đúng ý. Đây là <b>nghệ thuật (art)</b> — sự tái tạo sáng tạo theo ngữ cảnh, một yếu tố tích cực đáng được ghi nhận."
-  },
-  {
-    label: "Hồ sơ #08",
-    source: "The committee reached a unanimous decision.",
-    translated: "Ủy ban đã đạt được một quyết định nhất trí.",
-    correct: "accurate",
-    explain: "Câu dịch chính xác về nội dung, đúng ngữ pháp, tự nhiên và rõ ràng. Không có lỗi quy chiếu, không có lỗi ngôn ngữ, không gượng ép — đây là một bản dịch <b>đạt chuẩn</b>."
-  },
-];
-
-const OPTIONS = [
-  {key:"reference", title:"Lỗi quy chiếu", sub:"Sai sự thật / dữ kiện"},
-  {key:"linguistic", title:"Lỗi ngôn ngữ", sub:"Sai ngữ pháp / từ vựng"},
-  {key:"craft", title:"Translationese", sub:"Cứng, gượng, thiếu tự nhiên"},
-  {key:"art", title:"Sáng tạo hay", sub:"Tái tạo tốt theo ngữ cảnh"},
-  {key:"accurate", title:"Chính xác", sub:"Không có vấn đề gì"},
-];
-
-// ==== CẤU HÌNH FIREBASE (điền Database URL sau khi tạo xong) ====
-// Dán địa chỉ Realtime Database vào đây, ví dụ:
-// "https://ho-so-tham-dinh-default-rtdb.asia-southeast1.firebasedatabase.app"
-// Để trống "" nếu chưa có — nút nộp điểm & bảng xếp hạng sẽ tự ẩn.
+// ==== FIREBASE CONFIG (Realtime Database URL) ====
 const FIREBASE_DB_URL = "https://translation-game-4507c-default-rtdb.asia-southeast1.firebasedatabase.app";
+const IS_ADMIN = new URLSearchParams(window.location.search).get("admin") === "1";
 
 let idx = 0;
 let score = 0;
 let answered = false;
 let playerName = "";
+
+const TIME_LIMIT_SECONDS = 300; // 5 minutes
+let timeLeft = TIME_LIMIT_SECONDS;
+let timerId = null;
+
+const CASES = [
+  {
+    label: "Case #01", difficulty: "easy",
+    source: "The town hall was built in 1890.",
+    translated: "Tòa thị chính được xây dựng vào năm 1980.",
+    correct: "reference",
+    explain: "The date is changed from 1890 to 1980 — a real-world fact is misrepresented. This is a <b>referential error</b>: it conflicts with reality, unrelated to grammar or vocabulary."
+  },
+  {
+    label: "Case #02", difficulty: "easy",
+    source: "The committee reached a unanimous decision.",
+    translated: "Ủy ban đã đạt được một quyết định nhất trí.",
+    correct: "accurate",
+    explain: "The translation is factually correct, grammatical, natural, and clear. No referential error, no linguistic error, no awkwardness — this is an <b>accurate</b> translation."
+  },
+  {
+    label: "Case #03", difficulty: "easy",
+    source: "It's raining cats and dogs.",
+    translated: "Trời đang mưa mèo và chó.",
+    correct: "craft",
+    explain: "A word-for-word rendering that becomes meaningless in Vietnamese. This is a textbook case of <b>translationese</b> — the product of mechanical, non-contextual translation."
+  },
+  {
+    label: "Case #04", difficulty: "easy",
+    source: "I bought three books yesterday.",
+    translated: "Tôi đã mua ba con sách hôm qua.",
+    correct: "linguistic",
+    explain: "\"Con\" is a classifier used for animals, not for \"sách\" (books) — it should be \"cuốn/quyển\". This is a <b>linguistic error</b>: incorrect target-language grammar, unrelated to real-world facts."
+  },
+  {
+    label: "Case #05", difficulty: "easy",
+    source: "The patient's temperature was 39°C.",
+    translated: "Nhiệt độ của bệnh nhân là 39°F.",
+    correct: "reference",
+    explain: "39°C and 39°F represent very different values medically. Swapping the unit without converting the number is a <b>referential error</b> — a factual mistake with potentially serious consequences in a medical text."
+  },
+  {
+    label: "Case #06", difficulty: "medium",
+    source: "Please find attached the invoice.",
+    translated: "Vui lòng tìm đính kèm hóa đơn.",
+    correct: "craft",
+    explain: "The translation mirrors the English word order and phrase (\"find attached\" → \"tìm đính kèm\"), producing a stiff, unnatural Vietnamese sentence. This is <b>translationese</b> — falling under the \"craft\" area, not a clear grammar violation but noticeably foreign-sounding."
+  },
+  {
+    label: "Case #07", difficulty: "medium",
+    source: "He gave her a book.",
+    translated: "Anh ấy đưa cho cô ấy những một cuốn sách.",
+    correct: "linguistic",
+    explain: "\"Những\" (plural marker) and \"một\" (\"one\") contradict each other — this combination doesn't exist in correct Vietnamese grammar. This is a <b>linguistic error</b> caused by insufficient command of the target language."
+  },
+  {
+    label: "Case #08", difficulty: "medium",
+    source: "He was as busy as a bee.",
+    translated: "Anh ấy bận rộn như con thoi đưa.",
+    correct: "art",
+    explain: "Instead of a stiff literal rendering of \"busy as a bee\", the translator chose a natural, familiar Vietnamese image to convey the same meaning. This is <b>art</b> — creative, context-driven re-creation, a positive quality worth crediting."
+  },
+  {
+    label: "Case #09", difficulty: "medium",
+    source: "The bridge spans 1,200 metres.",
+    translated: "Cây cầu dài 1.020 mét.",
+    correct: "reference",
+    explain: "The digits are transposed (1,200 → 1,020) — easy to miss on a quick read, but it is still a factual/numerical <b>referential error</b>, changing real-world data."
+  },
+  {
+    label: "Case #10", difficulty: "medium",
+    source: "By next year, she will have graduated.",
+    translated: "Đến năm sau, cô ấy đã tốt nghiệp.",
+    correct: "linguistic",
+    explain: "\"Đã\" marks a completed past action, but the source describes a future event completed by a future point (future perfect) — it should be something like \"sẽ tốt nghiệp\" / \"sẽ hoàn tất việc tốt nghiệp\". Using \"đã\" misplaces the event in time — an aspect-marker <b>linguistic error</b>."
+  },
+  {
+    label: "Case #11", difficulty: "hard",
+    source: "We look forward to hearing from you.",
+    translated: "Chúng tôi mong đợi được nghe từ bạn.",
+    correct: "craft",
+    explain: "\"Nghe từ bạn\" is a literal calque of \"hear from you\". It's grammatically fine, but a natural Vietnamese business register would say something like \"mong sớm nhận được phản hồi từ bạn\". This is subtle <b>translationese</b> — unnatural phrasing rather than an outright grammar mistake."
+  },
+  {
+    label: "Case #12", difficulty: "hard",
+    source: "The board hereby authorises the release of funds.",
+    translated: "Hội đồng quản trị theo đây cho phép giải ngân số tiền nói trên.",
+    correct: "accurate",
+    explain: "This formal, legal-sounding register is appropriate for a formal source text — it's not translationese, just correctly matched formality. This case tests whether you mistake appropriate formal style for an error; it should be judged <b>accurate</b>."
+  },
+  {
+    label: "Case #13", difficulty: "hard",
+    source: "A journey of a thousand miles begins with a single step.",
+    translated: "Vạn dặm đường xa, khởi đầu từ một bước chân.",
+    correct: "art",
+    explain: "Rather than a flat literal rendering, the translator used a rhythmic, parallel four-syllable structure typical of Vietnamese proverbs, recreating the aphoristic tone of the original. A subtle but genuine act of <b>art</b> — creative, culturally attuned re-creation."
+  },
+  {
+    label: "Case #14", difficulty: "hard",
+    source: "The results may indicate a link between the two variables.",
+    translated: "Kết quả cho thấy có mối liên hệ giữa hai biến số.",
+    correct: "reference",
+    explain: "The source hedges with \"may indicate\" (a possibility, appropriate to cautious scientific writing), but the translation drops the hedge and asserts it as established fact (\"cho thấy có\" = \"shows that there is\"). This subtly changes the certainty of the claim — a <b>referential</b> distortion of meaning, not just a stylistic issue."
+  },
+  {
+    label: "Case #15", difficulty: "hard",
+    source: "She is responsible for the project.",
+    translated: "Cô ấy chịu trách nhiệm về cho dự án.",
+    correct: "linguistic",
+    explain: "\"Chịu trách nhiệm về\" alone already correctly means \"responsible for\" — adding \"cho\" creates a redundant, ungrammatical double-preposition collocation. Subtle enough that a fast reader might skim right past it — a <b>linguistic error</b>."
+  },
+  {
+    label: "Case #16", difficulty: "hard",
+    source: "Please let me know if you have any questions.",
+    translated: "Nếu có thắc mắc gì, xin vui lòng cho tôi biết.",
+    correct: "accurate",
+    explain: "Correctly and naturally translated, with no notable creative flourish — nor does it need one. This case tests whether you over-value flashy creativity: a solid, competent, plain translation should be judged <b>accurate</b>, not mistaken for \"art\"."
+  },
+];
+
+const OPTIONS = [
+  {key:"reference", title:"Referential Error", sub:"Wrong facts / data"},
+  {key:"linguistic", title:"Linguistic Error", sub:"Wrong grammar / vocabulary"},
+  {key:"craft", title:"Translationese", sub:"Stiff, unnatural, calque-like"},
+  {key:"art", title:"Good Re-creation", sub:"Creative, context-driven solution"},
+  {key:"accurate", title:"Accurate", sub:"No issue, meets the standard"},
+];
 
 const root = document.getElementById("root");
 const dotsEl = document.getElementById("dots");
@@ -499,17 +613,27 @@ const scoreNowEl = document.getElementById("scoreNow");
 const scoreMaxEl = document.getElementById("scoreMax");
 scoreMaxEl.textContent = CASES.length;
 
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
 function renderIntro(){
+  if(IS_ADMIN){
+    renderAdminBoard();
+    return;
+  }
   root.innerHTML = `
     <div class="panel">
-      <h2>Trước khi vào ca trực...</h2>
-      <p>Vui lòng đăng ký danh tính để hồ sơ điều tra được ghi nhận đúng người.</p>
+      <h2>Before you clock in...</h2>
+      <p>Please register your identity so the case file is credited to the right investigator.</p>
       <div class="name-form">
-        <label>Họ và tên</label>
-        <input id="nameInput" type="text" placeholder="Nguyễn Văn A" maxlength="40" autocomplete="off">
+        <label>Full name</label>
+        <input id="nameInput" type="text" placeholder="Jane Smith" maxlength="40" autocomplete="off">
         <div class="name-err" id="nameErr"></div>
       </div>
-      <button class="start-btn" onclick="confirmName()">Xác nhận danh tính →</button>
+      <button class="start-btn" onclick="confirmName()">Confirm identity →</button>
     </div>
   `;
   const inp = document.getElementById("nameInput");
@@ -520,7 +644,7 @@ function renderIntro(){
 function confirmName(){
   const val = document.getElementById("nameInput").value.trim();
   if(!val){
-    document.getElementById("nameErr").textContent = "Vui lòng nhập tên trước khi bắt đầu.";
+    document.getElementById("nameErr").textContent = "Please enter your name before starting.";
     return;
   }
   playerName = val;
@@ -530,32 +654,56 @@ function confirmName(){
 function renderFramework(){
   root.innerHTML = `
     <div class="panel">
-      <span class="player-tag">Điều tra viên: ${escapeHtml(playerName)}</span>
-      <h2>Hướng dẫn điều tra</h2>
-      <p>Peter Newmark chia việc đánh giá bản dịch thành 4 mảng: <b>khoa học</b> (đúng/sai rõ ràng), <b>kỹ năng</b> (tự nhiên hay gượng ép), <b>nghệ thuật</b> (sáng tạo, tái tạo hay) và <b>gu thẩm mỹ</b>. Bạn sẽ xem ${CASES.length} "hồ sơ" — mỗi hồ sơ gồm câu gốc và bản dịch. Nhiệm vụ: đóng dấu đúng loại vấn đề cho từng hồ sơ.</p>
+      <span class="player-tag">Investigator: ${escapeHtml(playerName)}</span>
+      <h2>Field Manual</h2>
+      <p>Peter Newmark splits translation assessment into four areas: <b>science</b> (clearly right/wrong), <b>craft</b> (natural vs. stiff), <b>art</b> (creative, well re-created) and <b>taste</b>. You'll review ${CASES.length} "case files" — each one pairs a source sentence with a translation. Your job: stamp each case with the correct category. Questions run from easy to hard.</p>
+      <p style="font-weight:700; color:var(--red-bright);">⏱ You have ${Math.floor(TIME_LIMIT_SECONDS/60)} minutes to complete all ${CASES.length} cases. When time is up, your current score is submitted automatically.</p>
       <div class="framework">
-        <div><b>Khoa học</b>Lỗi quy chiếu &amp; lỗi ngôn ngữ — đúng/sai rõ ràng</div>
-        <div><b>Kỹ năng</b>Translationese — dịch cứng, thiếu tự nhiên</div>
-        <div><b>Nghệ thuật</b>Tái tạo sáng tạo theo ngữ cảnh</div>
-        <div><b>Chính xác</b>Không có lỗi, đạt chuẩn</div>
+        <div><b>Science</b>Referential &amp; linguistic errors — clearly right or wrong</div>
+        <div><b>Craft</b>Translationese — stiff, calque-like phrasing</div>
+        <div><b>Art</b>Creative, context-driven re-creation</div>
+        <div><b>Accurate</b>No error, meets the standard</div>
       </div>
-      <button class="start-btn" onclick="startGame()">▶ Mở hồ sơ đầu tiên</button>
-      ${FIREBASE_DB_URL ? `<button class="start-btn" style="margin-left:10px;" onclick="renderLeaderboard()">📋 Xem bảng xếp hạng</button>` : ``}
+      <button class="start-btn" onclick="startGame()">▶ Open Case #01</button>
+      ${FIREBASE_DB_URL ? `<button class="start-btn" style="margin-left:10px;" onclick="renderLeaderboard()">📋 View leaderboard</button>` : ``}
     </div>
   `;
 }
 
-function escapeHtml(str){
-  const d = document.createElement("div");
-  d.textContent = str;
-  return d.innerHTML;
-}
-
 function startGame(){
   idx = 0; score = 0; answered = false;
+  timeLeft = TIME_LIMIT_SECONDS;
   progressArea.style.display = "block";
   renderDots();
+  startTimer();
   renderCase();
+}
+
+function startTimer(){
+  clearInterval(timerId);
+  updateTimerDisplay();
+  timerId = setInterval(()=>{
+    timeLeft--;
+    updateTimerDisplay();
+    if(timeLeft <= 0){
+      clearInterval(timerId);
+      timeUp();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(){
+  const el = document.getElementById("timerEl");
+  if(!el) return;
+  const m = Math.max(0, Math.floor(timeLeft / 60));
+  const s = Math.max(0, timeLeft % 60);
+  el.textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  el.classList.toggle("timer-warn", timeLeft <= 60);
+}
+
+function timeUp(){
+  answered = true;
+  renderEnd(true);
 }
 
 function renderDots(){
@@ -574,18 +722,21 @@ function renderCase(){
   root.innerHTML = `
     <div class="case-card">
       <div class="stamp" id="stampEl"></div>
-      <div class="case-no">${c.label} — Nguồn Anh ngữ / Bản dịch tiếng Việt</div>
+      <div class="case-no">
+        <span>${c.label} — English source / Vietnamese translation</span>
+        <span class="difficulty ${c.difficulty}">${c.difficulty.toUpperCase()}</span>
+      </div>
       <div class="pair">
         <div class="line">
-          <div class="lbl">Văn bản gốc (EN)</div>
+          <div class="lbl">Source text (EN)</div>
           <div class="txt">${c.source}</div>
         </div>
         <div class="line translated">
-          <div class="lbl">Bản dịch (VI)</div>
+          <div class="lbl">Translation (VI)</div>
           <div class="txt">${c.translated}</div>
         </div>
       </div>
-      <div class="question">Bạn xếp bản dịch này vào hồ sơ nào?</div>
+      <div class="question">Which case file does this translation belong to?</div>
       <div class="options" id="optsEl">
         ${OPTIONS.map(o=>`
           <button class="opt" data-key="${o.key}" onclick="pick('${o.key}')">
@@ -595,7 +746,7 @@ function renderCase(){
       </div>
       <div class="explain" id="explainEl"></div>
       <div class="next-row" id="nextRow">
-        <button class="next-btn" onclick="nextCase()">Hồ sơ tiếp theo →</button>
+        <button class="next-btn" onclick="nextCase()">Next case →</button>
       </div>
     </div>
   `;
@@ -618,7 +769,7 @@ function pick(key){
   });
 
   const stamp = document.getElementById("stampEl");
-  stamp.textContent = isCorrect ? "Chính xác" : "Sai hồ sơ";
+  stamp.textContent = isCorrect ? "Correct" : "Wrong file";
   stamp.classList.add(isCorrect ? "ok" : "no");
   requestAnimationFrame(()=> stamp.classList.add("show"));
 
@@ -634,28 +785,30 @@ function pick(key){
 function nextCase(){
   idx++;
   if(idx >= CASES.length){
-    renderEnd();
+    clearInterval(timerId);
+    renderEnd(false);
   } else {
     renderCase();
   }
 }
 
-function renderEnd(){
+function renderEnd(isTimeout){
   progressArea.style.display = "none";
+  clearInterval(timerId);
   const pct = score / CASES.length;
   let rank, note;
   if(pct === 1){
-    rank = "Chuyên Gia Newmark";
-    note = "Bạn phân biệt thành thạo cả 4 mảng: khoa học, kỹ năng, nghệ thuật và gu thẩm mỹ trong đánh giá bản dịch.";
+    rank = "Newmark Specialist";
+    note = "You confidently tell apart all four areas — science, craft, art, and taste — in translation assessment.";
   } else if(pct >= 0.75){
-    rank = "Nhà Phê Bình Tận Tâm";
-    note = "Rất tốt! Bạn nắm khá chắc khung phân tích của Newmark, chỉ còn vài điểm cần tinh chỉnh.";
+    rank = "Dedicated Critic";
+    note = "Very good! You have a solid grasp of Newmark's analytical framework, with just a few points to sharpen.";
   } else if(pct >= 0.5){
-    rank = "Điều Tra Viên Triển Vọng";
-    note = "Bạn đã hiểu ý tưởng chính, nhưng nên xem lại ranh giới giữa lỗi quy chiếu, lỗi ngôn ngữ và translationese.";
+    rank = "Promising Investigator";
+    note = "You've got the core idea, but review the boundaries between referential errors, linguistic errors, and translationese.";
   } else {
-    rank = "Điều Tra Viên Tập Sự";
-    note = "Hãy xem lại khung 4 mảng (khoa học – kỹ năng – nghệ thuật – gu thẩm mỹ) trong Chương 17 rồi thử lại nhé.";
+    rank = "Trainee Investigator";
+    note = "Revisit the four-area framework (science – craft – art – taste) in Chapter 17, then give it another try.";
   }
 
   const hasBoard = !!FIREBASE_DB_URL;
@@ -663,9 +816,10 @@ function renderEnd(){
   root.innerHTML = `
     <div class="panel">
       <span class="player-tag">${escapeHtml(playerName)}</span>
-      <div class="rank-badge">Kết quả điều tra</div>
+      <div class="rank-badge">Investigation result</div>
       <div class="big-score">${score} / ${CASES.length}</div>
       <h2>${rank}</h2>
+      ${isTimeout ? `<p style="color:#b0392f; font-weight:700;">⏰ Time's up (5 minutes) — your current score was submitted automatically.</p>` : ``}
       <p>${note}</p>
       <div class="recap">
         ${CASES.map(c=>{
@@ -675,13 +829,13 @@ function renderEnd(){
       </div>
       ${hasBoard ? `
       <div class="submit-row">
-        <p>Nộp điểm vào bảng xếp hạng chung của lớp để tranh top.</p>
-        <button class="submit-btn" id="submitBtn" onclick="submitScore()">🏆 Nộp kết quả vào bảng xếp hạng</button>
+        <p>Submit your score to the class leaderboard to compete for the top spot.</p>
+        <button class="submit-btn" id="submitBtn" onclick="submitScore()">🏆 Submit to leaderboard</button>
         <div class="submit-note" id="submitNote"></div>
       </div>` : ``}
       <div style="margin-top:24px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-        <button class="start-btn" onclick="startGame()">↺ Điều tra lại từ đầu</button>
-        ${hasBoard ? `<button class="start-btn" onclick="renderLeaderboard()">📋 Xem bảng xếp hạng</button>` : ``}
+        <button class="start-btn" onclick="startGame()">↺ Start over</button>
+        ${hasBoard ? `<button class="start-btn" onclick="renderLeaderboard()">📋 View leaderboard</button>` : ``}
       </div>
     </div>
   `;
@@ -691,7 +845,7 @@ async function submitScore(){
   const btn = document.getElementById("submitBtn");
   const note = document.getElementById("submitNote");
   btn.disabled = true;
-  btn.textContent = "Đang nộp...";
+  btn.textContent = "Submitting...";
   try{
     const res = await fetch(`${FIREBASE_DB_URL}/scores.json`, {
       method: "POST",
@@ -699,25 +853,25 @@ async function submitScore(){
       body: JSON.stringify({ name: playerName, score: score, total: CASES.length, time: Date.now() })
     });
     if(!res.ok) throw new Error("network");
-    btn.textContent = "✓ Đã nộp kết quả";
-    note.textContent = "Bấm \"Xem bảng xếp hạng\" để theo dõi vị trí của bạn.";
+    btn.textContent = "✓ Submitted";
+    note.textContent = "Tap \"View leaderboard\" to check your ranking.";
   } catch(err){
     btn.disabled = false;
-    btn.textContent = "🏆 Nộp kết quả vào bảng xếp hạng";
-    note.textContent = "Nộp thất bại, kiểm tra kết nối mạng và thử lại.";
+    btn.textContent = "🏆 Submit to leaderboard";
+    note.textContent = "Submission failed — check your connection and try again.";
   }
 }
 
 async function renderLeaderboard(){
   root.innerHTML = `
     <div class="panel">
-      <div class="rank-badge">Bảng xếp hạng</div>
-      <h2>Top điều tra viên xuất sắc</h2>
+      <div class="rank-badge">Leaderboard</div>
+      <h2>Top investigators</h2>
       <div id="boardArea" style="text-align:left; max-width:480px; margin:18px auto;">
-        <p style="text-align:center;">Đang tải...</p>
+        <p style="text-align:center;">Loading...</p>
       </div>
-      <button class="start-btn" onclick="renderLeaderboard()">↻ Làm mới</button>
-      <button class="start-btn" onclick="startGame()">↺ Chơi lại</button>
+      <button class="start-btn" onclick="renderLeaderboard()">↻ Refresh</button>
+      <button class="start-btn" onclick="startGame()">↺ Play again</button>
     </div>
   `;
   try{
@@ -727,7 +881,7 @@ async function renderLeaderboard(){
     entries.sort((a,b)=> b.score - a.score || a.time - b.time);
     const boardArea = document.getElementById("boardArea");
     if(entries.length === 0){
-      boardArea.innerHTML = `<p style="text-align:center;">Chưa có ai nộp kết quả.</p>`;
+      boardArea.innerHTML = `<p style="text-align:center;">No submissions yet.</p>`;
       return;
     }
     boardArea.innerHTML = entries.slice(0,15).map((e,i)=>{
@@ -735,8 +889,66 @@ async function renderLeaderboard(){
       return `<div class="recap-row"><span>${medal} ${escapeHtml(e.name)}</span><span>${e.score}/${e.total}</span></div>`;
     }).join("");
   } catch(err){
-    document.getElementById("boardArea").innerHTML = `<p style="text-align:center;">Không tải được bảng xếp hạng, kiểm tra kết nối mạng.</p>`;
+    document.getElementById("boardArea").innerHTML = `<p style="text-align:center;">Couldn't load the leaderboard — check your connection.</p>`;
   }
+}
+
+async function renderAdminBoard(){
+  root.innerHTML = `
+    <div class="panel">
+      <div class="rank-badge">Admin mode</div>
+      <h2>Full submission list</h2>
+      <div id="adminArea"><p style="text-align:center;">Loading data...</p></div>
+      <div class="admin-toolbar">
+        <button class="start-btn" onclick="renderAdminBoard()">↻ Refresh</button>
+        <button class="start-btn" id="exportBtn" onclick="exportCsv()" style="display:none;">⬇ Export CSV</button>
+      </div>
+    </div>
+  `;
+  try{
+    const res = await fetch(`${FIREBASE_DB_URL}/scores.json`);
+    const data = await res.json();
+    const entries = data ? Object.values(data) : [];
+    entries.sort((a,b)=> b.score - a.score || a.time - b.time);
+    window._adminEntries = entries;
+    const area = document.getElementById("adminArea");
+    if(entries.length === 0){
+      area.innerHTML = `<div class="admin-empty">No submissions yet.</div>`;
+      return;
+    }
+    document.getElementById("exportBtn").style.display = "inline-block";
+    area.innerHTML = `
+      <table class="admin-table">
+        <thead><tr><th>#</th><th>Name</th><th>Score</th><th>Submitted at</th></tr></thead>
+        <tbody>
+          ${entries.map((e,i)=>{
+            const d = new Date(e.time);
+            const timeStr = d.toLocaleString("en-GB");
+            return `<tr><td>${i+1}</td><td>${escapeHtml(e.name)}</td><td>${e.score}/${e.total}</td><td>${timeStr}</td></tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch(err){
+    document.getElementById("adminArea").innerHTML = `<div class="admin-empty">Couldn't load data — check your connection.</div>`;
+  }
+}
+
+function exportCsv(){
+  const entries = window._adminEntries || [];
+  if(entries.length === 0) return;
+  let csv = "\uFEFF" + "No.,Name,Score,Total,Submitted at\n";
+  entries.forEach((e,i)=>{
+    const d = new Date(e.time);
+    const timeStr = d.toLocaleString("en-GB");
+    const safeName = String(e.name).replace(/"/g, '""');
+    csv += `${i+1},"${safeName}",${e.score},${e.total},"${timeStr}"\n`;
+  });
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "translation_critic_leaderboard.csv";
+  link.click();
 }
 
 renderIntro();
